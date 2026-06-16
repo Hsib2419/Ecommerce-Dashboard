@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Dashboard</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, main, aside, div, section, button, img {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* ── DARK MODE ── */
+        body.dark { background-color: #0f172a; }
+        body.dark main { background-color: #0f172a; color: #f1f5f9; }
+        body.dark aside { background-color: #020617; }
+        body.dark .stat-card { background-color: #1e293b; }
+        body.dark .stat-card h3 { color: #94a3b8; }
+        body.dark .stat-card .stat-value { color: #f1f5f9; }
+        body.dark .order-section { background-color: #1e293b; }
+        body.dark .order-section h2 { color: #f1f5f9; }
+        body.dark thead th { color: #94a3b8; }
+        body.dark tbody td { color: #e2e8f0; }
+        body.dark .product-card { background-color: #1e293b; }
+        body.dark .product-title { color: #f1f5f9; }
+        body.dark .product-meta { color: #94a3b8; }
+        body.dark .product-price { color: #4ade80; }
+        body.dark .top-nav { background-color: #1e293b; }
+        body.dark tbody tr:hover { background-color: transparent; }
+        body.dark #searchInput {
+            background-color: #334155;
+            color: #f1f5f9;
+            border-color: #475569;
+        }
+        body.dark #searchInput::placeholder { color: #94a3b8; }
+        body.dark .add-cart-btn:not(.added) {
+            background-color: #334155;
+            color: #f1f5f9;
+        }
+        .add-cart-btn.added {
+            background-color: #22c55e !important;
+            color: #ffffff !important;
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+        body.dark #darkModeBtn { background-color: #334155; }
+        body.dark #darkModeBtn:hover { background-color: #475569; }
+        body.dark .status-delivered { color: #86efac; }
+        body.dark .status-pending   { color: #fde68a; }
+        body.dark .status-cancelled { color: #fca5a5; }
+
+        /* ── SIDEBAR NAV LINK ACTIVE / HOVER ── */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.18);
+            transform: scale(1.04);
+        }
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.25);
+        }
+        .nav-link svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-200">
+
+    <!-- SIDEBAR -->
+    <aside class="bg-cyan-600 text-white w-64 p-6 flex flex-col">
+        <!-- Brand -->
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white/20 p-2 rounded-xl">
+                <i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold leading-tight">E-Shop<br>
+                <span class="text-cyan-200 text-sm font-medium tracking-widest uppercase">Admin</span>
+            </h1>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1">
+            <a href="index.html" class="nav-link active">
+                <i data-lucide="layout-dashboard"></i>
+                Dashboard
+            </a>
+            <a href="orders.html" class="nav-link">
+                <i data-lucide="shopping-cart"></i>
+                Orders
+            </a>
+            <a href="products.html" class="nav-link">
+                <i data-lucide="package"></i>
+                Products
+            </a>
+            <a href="customers.html" class="nav-link">
+                <i data-lucide="users"></i>
+                Customers
+            </a>
+            <a href="settings.html" class="nav-link">
+                <i data-lucide="settings"></i>
+                Settings
+            </a>
+        </nav>
+
+        <!-- Sidebar footer -->
+        <div class="mt-6 pt-4 border-t border-white/20 flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s"
+                 alt="Profile" class="w-9 h-9 rounded-full border-2 border-white/40">
+            <div>
+                <p class="text-sm font-semibold leading-none">Admin User</p>
+                <p class="text-xs text-cyan-200 mt-0.5">admin@eshop.com</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6 bg-white">
+
+        <!-- Top Nav -->
+        <nav class="top-nav flex justify-between items-center p-4 rounded-xl shadow-lg mb-6">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search products..."
+                class="text-gray-500 border-2 p-2 w-80 rounded-lg outline-none text-black focus:ring-4 focus:ring-blue-500 transition-colors duration-200"
+            >
+            <div class="flex items-center gap-6">
+                <button id="darkModeBtn" class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-3xl shadow-lg hover:bg-cyan-800 transition duration-300 hover:scale-105 text-sm font-medium">
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                    <span id="darkModeBtnText">Dark Mode</span>
+                </button>
+
+                <!-- Cart -->
+                <div class="relative flex items-center text-gray-700" id="cartWidget">
+                    <i data-lucide="shopping-cart" class="w-7 h-7"></i>
+                    <span id="cartCount" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                </div>
+
+                <!-- Bell -->
+                <div class="relative text-gray-700">
+                    <i data-lucide="bell" class="w-7 h-7"></i>
+                    <span class="absolute -top-1 -right-1 bg-cyan-500 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Stat Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-cyan-100 p-3 rounded-xl">
+                    <i data-lucide="trending-up" class="w-6 h-6 text-cyan-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Total Sales</h3>
+                    <p class="stat-value font-bold text-2xl">$12,450</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-purple-100 p-3 rounded-xl">
+                    <i data-lucide="clipboard-list" class="w-6 h-6 text-purple-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Orders</h3>
+                    <p class="stat-value font-bold text-2xl">1,245</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-green-100 p-3 rounded-xl">
+                    <i data-lucide="users" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Customers</h3>
+                    <p class="stat-value font-bold text-2xl">890</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-orange-100 p-3 rounded-xl">
+                    <i data-lucide="dollar-sign" class="w-6 h-6 text-orange-500"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Revenue</h3>
+                    <p class="stat-value font-bold text-2xl">$45,800</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Orders -->
+        <section class="order-section mt-6 bg-white p-6 rounded-xl shadow-lg">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="receipt" class="w-5 h-5 text-cyan-600"></i>
+                <h2 class="text-xl font-bold">Recent Orders</h2>
+            </div>
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b border-gray-100">
+                        <th class="text-gray-500 px-3 py-2 font-medium">Order ID</th>
+                        <th class="text-gray-500 font-medium">Customer</th>
+                        <th class="text-gray-500 font-medium">Product</th>
+                        <th class="text-gray-500 font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td class="font-medium px-3 py-2 text-lg">#1001</td>
+                        <td class="text-lg">Alif</td>
+                        <td class="text-lg">Headphone</td>
+                        <td class="text-lg"><span class="status-delivered bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Delivered</span></td>
+                    </tr>
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td class="font-medium px-3 py-2 text-lg">#1002</td>
+                        <td class="text-lg">Alamin</td>
+                        <td class="text-lg">Mouse</td>
+                        <td class="text-lg"><span class="status-pending bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">Pending</span></td>
+                    </tr>
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td class="font-medium px-3 py-2 text-lg">#1003</td>
+                        <td class="text-lg">Sadman</td>
+                        <td class="text-lg">Keyboard</td>
+                        <td class="text-lg"><span class="status-cancelled bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold">Cancelled</span></td>
+                    </tr>
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td class="font-medium px-3 py-2 text-lg">#1004</td>
+                        <td class="text-lg">Eram</td>
+                        <td class="text-lg">Monitor</td>
+                        <td class="text-lg"><span class="status-delivered bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Delivered</span></td>
+                    </tr>
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="font-medium px-3 py-2 text-lg">#1005</td>
+                        <td class="text-lg">Shifat</td>
+                        <td class="text-lg">Webcam</td>
+                        <td class="text-lg"><span class="status-pending bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-semibold">Pending</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Top Products -->
+        <section class="mt-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="package" class="w-5 h-5 text-cyan-600"></i>
+                <h2 class="text-xl font-bold">Top Products</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="product-card group bg-white rounded-xl overflow-hidden shadow hover:scale-105 transition-all duration-200">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1527814050087-3793815479db" alt="Gaming Mouse" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="product-title text-xl font-bold text-gray-800 mb-1">Gaming Mouse</h3>
+                        <p class="product-price font-bold text-green-600 text-lg">$49</p>
+                        <p class="product-meta text-sm text-gray-500 mb-4">Sold: 320</p>
+                        <button class="add-cart-btn w-full py-2 bg-gray-100 hover:bg-cyan-600 hover:text-white font-medium rounded-lg transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card group bg-white rounded-xl overflow-hidden shadow hover:scale-105 transition-all duration-200">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1511467687858-23d96c32e4ae" alt="Mechanical Keyboard" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="product-title text-xl font-bold text-gray-800 mb-1">Mechanical Keyboard</h3>
+                        <p class="product-price font-bold text-green-600 text-lg">$89</p>
+                        <p class="product-meta text-sm text-gray-500 mb-4">Sold: 280</p>
+                        <button class="add-cart-btn w-full py-2 bg-gray-100 hover:bg-cyan-600 hover:text-white font-medium rounded-lg transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card group bg-white rounded-xl overflow-hidden shadow hover:scale-105 transition-all duration-200">
+                    <div class="overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf" alt="Monitor" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="product-title text-xl font-bold text-gray-800 mb-1">Monitor</h3>
+                        <p class="product-price font-bold text-green-600 text-lg">$199</p>
+                        <p class="product-meta text-sm text-gray-500 mb-4">Sold: 170</p>
+                        <button class="add-cart-btn w-full py-2 bg-gray-100 hover:bg-cyan-600 hover:text-white font-medium rounded-lg transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="product-card group bg-white rounded-xl overflow-hidden shadow hover:scale-105 transition-all duration-200">
+                    <div class="overflow-hidden">
+                        <img src="https://media.istockphoto.com/id/674322530/photo/webcam-3d-rendering-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=FuIl2RKv385PSVynrDEgonl9ZCNj5Llibs77uYk9KPI=" alt="Webcam" class="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="product-title text-xl font-bold text-gray-800 mb-1">Webcam</h3>
+                        <p class="product-price font-bold text-green-600 text-lg">$79</p>
+                        <p class="product-meta text-sm text-gray-500 mb-4">Sold: 110</p>
+                        <button class="add-cart-btn w-full py-2 bg-gray-100 hover:bg-cyan-600 hover:text-white font-medium rounded-lg transition-colors">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Init Lucide icons
+        lucide.createIcons();
+
+        // ── SEARCH ──
+        const searchInput = document.getElementById("searchInput");
+        const productCards = document.querySelectorAll(".product-card");
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.toLowerCase();
+            productCards.forEach(function (card) {
+                const title = card.querySelector("h3").textContent.toLowerCase();
+                card.style.display = title.includes(query) ? "" : "none";
+            });
+        });
+
+        // ── DARK MODE ──
+        const darkModeBtn     = document.getElementById("darkModeBtn");
+        const darkModeBtnText = document.getElementById("darkModeBtnText");
+        const cartWidget      = document.getElementById("cartWidget");
+        const moonIcon        = darkModeBtn.querySelector("[data-lucide='moon']");
+
+        darkModeBtn.addEventListener("click", function () {
+            const isDark = document.body.classList.toggle("dark");
+
+            if (isDark) {
+                darkModeBtnText.textContent = "Light Mode";
+                moonIcon.setAttribute("data-lucide", "sun");
+                cartWidget.classList.replace("text-gray-700", "text-gray-200");
+            } else {
+                darkModeBtnText.textContent = "Dark Mode";
+                moonIcon.setAttribute("data-lucide", "moon");
+                cartWidget.classList.replace("text-gray-200", "text-gray-700");
+            }
+            lucide.createIcons();
+        });
+
+        
+
+        // ── ADD TO CART ──
+        const cartCount  = document.getElementById("cartCount");
+        const addButtons = document.querySelectorAll(".add-cart-btn");
+        let count = 0;
+
+        addButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                count++;
+                cartCount.textContent = count;
+                button.textContent = "Added ✓";
+                button.disabled = true;
+                button.classList.add("added");
+            });
+        });
+    </script>
+</body>
+</html>

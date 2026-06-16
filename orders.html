@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - E-Shop Admin</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, main, aside, div, section, button, img {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* ── DARK MODE ── */
+        body.dark { background-color: #0f172a; }
+        body.dark main { background-color: #0f172a; color: #f1f5f9; }
+        body.dark aside { background-color: #020617; }
+        body.dark .top-nav { background-color: #1e293b; }
+        body.dark #searchInput {
+            background-color: #334155;
+            color: #f1f5f9;
+            border-color: #475569;
+        }
+        body.dark #searchInput::placeholder { color: #94a3b8; }
+        body.dark #darkModeBtn { background-color: #334155; }
+        body.dark #darkModeBtn:hover { background-color: #475569; }
+        body.dark .page-card { background-color: #1e293b; }
+        body.dark .page-card h2 { color: #f1f5f9; }
+        body.dark thead th { color: #94a3b8; background-color: #1e293b; }
+        body.dark tbody tr { border-color: #334155; }
+        body.dark tbody tr td { color: #e2e8f0; }
+        body.dark tbody tr:hover { background-color: transparent; }
+        body.dark .filter-btn { background-color: #334155; color: #cbd5e1; border-color: #475569; }
+        body.dark .filter-btn.active-filter { background-color: #0891b2; color: white; }
+        body.dark .order-id { color: #7dd3fc; }
+        body.dark .stat-card { background-color: #1e293b; }
+        body.dark .stat-card h3 { color: #94a3b8; }
+        body.dark .stat-value { color: #f1f5f9; }
+
+        /* ── SIDEBAR ── */
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            margin-bottom: 6px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.18);
+            transform: scale(1.04);
+        }
+        .nav-link.active { background-color: rgba(255,255,255,0.25); }
+        .nav-link svg { flex-shrink: 0; width: 20px; height: 20px; }
+
+        /* ── STATUS BADGES ── */
+        .badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .badge-delivered { background: #dcfce7; color: #15803d; }
+        .badge-pending   { background: #fef9c3; color: #a16207; }
+        .badge-cancelled { background: #fee2e2; color: #b91c1c; }
+        .badge-shipped   { background: #dbeafe; color: #1d4ed8; }
+
+        body.dark .badge-delivered { background: #14532d; color: #86efac; }
+        body.dark .badge-pending   { background: #713f12; color: #fde68a; }
+        body.dark .badge-cancelled { background: #7f1d1d; color: #fca5a5; }
+        body.dark .badge-shipped   { background: #1e3a5f; color: #93c5fd; }
+
+        /* ── PAGINATION ── */
+        .page-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .page-btn:hover { background: #0891b2; color: white; border-color: #0891b2; }
+        .page-btn.active-page { background: #0891b2; color: white; border-color: #0891b2; }
+        body.dark .page-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        body.dark .page-btn:hover { background: #0891b2; color: white; }
+        body.dark .page-btn.active-page { background: #0891b2; color: white; }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-200">
+
+    <!-- SIDEBAR -->
+    <aside class="bg-cyan-600 text-white w-64 p-6 flex flex-col min-h-screen">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white/20 p-2 rounded-xl">
+                <i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold leading-tight">E-Shop<br><span class="text-cyan-200 text-sm font-medium tracking-widest uppercase">Admin</span></h1>
+        </div>
+        <nav class="flex-1">
+            <a href="index.html" class="nav-link">
+                <i data-lucide="layout-dashboard"></i> Dashboard
+            </a>
+            <a href="orders.html" class="nav-link active">
+                <i data-lucide="shopping-cart"></i> Orders
+            </a>
+            <a href="products.html" class="nav-link">
+                <i data-lucide="package"></i> Products
+            </a>
+            <a href="customers.html" class="nav-link">
+                <i data-lucide="users"></i> Customers
+            </a>
+            <a href="settings.html" class="nav-link">
+                <i data-lucide="settings"></i> Settings
+            </a>
+        </nav>
+        <div class="mt-6 pt-4 border-t border-white/20 flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s"
+                 alt="Profile" class="w-9 h-9 rounded-full border-2 border-white/40">
+            <div>
+                <p class="text-sm font-semibold leading-none">Admin User</p>
+                <p class="text-xs text-cyan-200 mt-0.5">admin@eshop.com</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6 bg-white">
+
+        <!-- Top Nav -->
+        <nav class="top-nav flex justify-between items-center p-4 rounded-xl shadow-lg mb-6">
+            <div class="flex items-center gap-2 text-gray-500">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span class="text-sm">Home</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span class="text-sm font-semibold text-cyan-600">Orders</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <button id="darkModeBtn" class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-3xl shadow-lg hover:bg-cyan-800 transition duration-300 hover:scale-105 text-sm font-medium">
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                    <span id="darkModeBtnText">Dark Mode</span>
+                </button>
+                <div class="relative flex items-center text-gray-700" id="cartWidget">
+                    <i data-lucide="bell" class="w-7 h-7"></i>
+                    <span class="absolute -top-1 -right-1 bg-cyan-500 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+                </div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s"
+                     alt="Profile" class="w-10 h-10 rounded-full">
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold">Orders</h1>
+                
+            </div>
+            <button class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-xl hover:bg-cyan-700 transition hover:scale-105 font-medium shadow">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                New Order
+            </button>
+        </div>
+
+        <!-- Stat Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-cyan-100 p-3 rounded-xl">
+                    <i data-lucide="shopping-cart" class="w-6 h-6 text-cyan-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Total Orders</h3>
+                    <p class="stat-value font-bold text-2xl">1,245</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-yellow-100 p-3 rounded-xl">
+                    <i data-lucide="clock" class="w-6 h-6 text-yellow-500"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Pending</h3>
+                    <p class="stat-value font-bold text-2xl">48</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-green-100 p-3 rounded-xl">
+                    <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Delivered</h3>
+                    <p class="stat-value font-bold text-2xl">1,102</p>
+                </div>
+            </div>
+            <div class="stat-card bg-white p-6 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-red-100 p-3 rounded-xl">
+                    <i data-lucide="x-circle" class="w-6 h-6 text-red-500"></i>
+                </div>
+                <div>
+                    <h3 class="font-medium text-gray-500 text-sm">Cancelled</h3>
+                    <p class="stat-value font-bold text-2xl">95</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orders Table Card -->
+        <div class="page-card bg-white rounded-xl shadow-lg p-6">
+
+            <!-- Search + Filter Row -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                <div class="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-4 py-2 w-full md:w-72 focus-within:border-cyan-400 transition">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                    <input type="text" id="orderSearch" placeholder="Search orders..."
+                        class="outline-none bg-transparent text-sm w-full text-gray-700">
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <button class="filter-btn active-filter px-4 py-2 rounded-xl border text-sm font-medium transition" data-filter="all">All</button>
+                    <button class="filter-btn px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 transition" data-filter="delivered">Delivered</button>
+                    <button class="filter-btn px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 transition" data-filter="pending">Pending</button>
+                    <button class="filter-btn px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 transition" data-filter="shipped">Shipped</button>
+                    <button class="filter-btn px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 transition" data-filter="cancelled">Cancelled</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left" id="ordersTable">
+                    <thead>
+                        <tr class="border-b-2 border-gray-100">
+                            <th class="text-gray-500 font-medium px-3 py-3 text-sm">Order ID</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Customer</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Product</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Date</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Amount</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Status</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <!-- rows injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <p class="text-sm text-gray-500" id="paginationInfo">Showing 1–10 of 20 orders</p>
+                <div class="flex items-center gap-2" id="paginationBtns"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // ── ORDER DATA ──
+        const orders = [
+
+            { id: "#1001", customer: "John Roger",   product: "Headphone",        date: "2025-06-01", amount: "$120", status: "delivered" },
+            { id: "#1002", customer: "Sarah Khan",  product: "Mouse",              date: "2025-06-02", amount: "$49",  status: "pending"   },
+            { id: "#1003", customer: "David Lee",   product: "Keyboard",           date: "2025-06-03", amount: "$89",  status: "cancelled" },
+            { id: "#1004", customer: "Emma Stone",  product: "Monitor",            date: "2025-06-04", amount: "$199", status: "delivered" },
+            { id: "#1005", customer: "Alex Turner", product: "Webcam",             date: "2025-06-05", amount: "$79",  status: "pending"   },
+            { id: "#1006", customer: "Mia Wong",    product: "Gaming Mouse",       date: "2025-06-06", amount: "$55",  status: "shipped"   },
+            { id: "#1007", customer: "Rafi Islam",  product: "USB Hub",            date: "2025-06-07", amount: "$35",  status: "delivered" },
+            { id: "#1008", customer: "Nina Patel",  product: "Laptop Stand",       date: "2025-06-08", amount: "$65",  status: "shipped"   },
+            { id: "#1009", customer: "Omar Faruk",  product: "Mechanical Keyboard",date: "2025-06-09", amount: "$89",  status: "pending"   },
+            { id: "#1010", customer: "Lily Chen",   product: "Headset",            date: "2025-06-10", amount: "$110", status: "delivered" },
+            { id: "#1011", customer: "Jake Park",   product: "SSD Drive",          date: "2025-06-11", amount: "$145", status: "cancelled" },
+            { id: "#1012", customer: "Priya Sen",   product: "Mousepad XL",        date: "2025-06-12", amount: "$25",  status: "delivered" },
+            { id: "#1013", customer: "Tom Brady",   product: "4K Webcam",          date: "2025-06-13", amount: "$99",  status: "shipped"   },
+            { id: "#1014", customer: "Anna Kim",    product: "RGB Keyboard",       date: "2025-06-14", amount: "$75",  status: "pending"   },
+            { id: "#1015", customer: "Ben Carter",  product: "Gaming Chair",       date: "2025-06-15", amount: "$320", status: "delivered" },
+            { id: "#1016", customer: "Zara Ahmed",  product: "Desk Lamp",          date: "2025-06-16", amount: "$40",  status: "delivered" },
+            { id: "#1017", customer: "Leo Martin",  product: "Portable SSD",       date: "2025-06-17", amount: "$88",  status: "cancelled" },
+            { id: "#1018", customer: "Sara Hossain",product: "Tablet Stand",       date: "2025-06-18", amount: "$30",  status: "shipped"   },
+            { id: "#1019", customer: "Chris Evans", product: "Noise Cancel Headphone", date: "2025-06-19", amount: "$220", status: "pending"},
+            { id: "#1020", customer: "Diana Prince", product:"Smart Speaker",     date: "2025-06-20", amount: "$95",  status: "delivered" },
+        ];
+
+        const ROWS_PER_PAGE = 10;
+        let currentPage    = 1;
+        let currentFilter  = "all";
+        let currentSearch  = "";
+
+        function badgeClass(status) {
+            return { delivered: "badge-delivered", pending: "badge-pending", cancelled: "badge-cancelled", shipped: "badge-shipped" }[status] || "";
+        }
+
+        function getFiltered() {
+            return orders.filter(function (o) {
+                const matchFilter = currentFilter === "all" || o.status === currentFilter;
+                const q = currentSearch.toLowerCase();
+                const matchSearch = o.id.toLowerCase().includes(q) ||
+                                    o.customer.toLowerCase().includes(q) ||
+                                    o.product.toLowerCase().includes(q);
+                return matchFilter && matchSearch;
+            });
+        }
+
+        function renderTable() {
+            const filtered = getFiltered();
+            const total    = filtered.length;
+            const start    = (currentPage - 1) * ROWS_PER_PAGE;
+            const pageData = filtered.slice(start, start + ROWS_PER_PAGE);
+            const tbody    = document.getElementById("ordersBody");
+
+            tbody.innerHTML = pageData.map(o => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50 transition order-row" data-status="${o.status}">
+                    <td class="order-id font-bold px-3 py-3 text-cyan-600">${o.id}</td>
+                    <td class="py-3 flex items-center gap-2 mt-1">
+                        <div class="w-8 h-8 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center font-bold text-sm">${o.customer[0]}</div>
+                        ${o.customer}
+                    </td>
+                    <td class="py-3">${o.product}</td>
+                    <td class="py-3 text-gray-500 text-sm">${o.date}</td>
+                    <td class="py-3 font-semibold">${o.amount}</td>
+                    <td class="py-3"><span class="badge ${badgeClass(o.status)}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
+                    <td class="py-3">
+                        <div class="flex items-center gap-2">
+                            <button class="text-cyan-600 hover:text-cyan-800 transition" title="View"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                            <button class="text-gray-400 hover:text-gray-600 transition" title="Edit"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                            <button class="text-red-400 hover:text-red-600 transition" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+
+            // pagination info
+            const end = Math.min(start + ROWS_PER_PAGE, total);
+            document.getElementById("paginationInfo").textContent =
+                total === 0 ? "No orders found" : `Showing ${start + 1}–${end} of ${total} orders`;
+
+            renderPagination(total);
+            lucide.createIcons();
+        }
+
+        function renderPagination(total) {
+            const totalPages = Math.ceil(total / ROWS_PER_PAGE);
+            const container  = document.getElementById("paginationBtns");
+            container.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.textContent = i;
+                btn.className   = "page-btn" + (i === currentPage ? " active-page" : "");
+                btn.addEventListener("click", () => { currentPage = i; renderTable(); });
+                container.appendChild(btn);
+            }
+        }
+
+        // Filter buttons
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.addEventListener("click", function () {
+                document.querySelectorAll(".filter-btn").forEach(b => {
+                    b.classList.remove("active-filter", "bg-cyan-600", "text-white", "border-cyan-600");
+                    b.classList.add("border-gray-200", "text-gray-600");
+                });
+                this.classList.add("active-filter");
+                this.classList.remove("border-gray-200", "text-gray-600");
+                currentFilter = this.dataset.filter;
+                currentPage   = 1;
+                renderTable();
+            });
+        });
+
+        // Search
+        document.getElementById("orderSearch").addEventListener("input", function () {
+            currentSearch = this.value;
+            currentPage   = 1;
+            renderTable();
+        });
+
+        // Dark Mode
+        const darkModeBtn     = document.getElementById("darkModeBtn");
+        const darkModeBtnText = document.getElementById("darkModeBtnText");
+        const cartWidget      = document.getElementById("cartWidget");
+
+        darkModeBtn.addEventListener("click", function () {
+            const isDark = document.body.classList.toggle("dark");
+            const moonIcon = darkModeBtn.querySelector("i");
+            if (isDark) {
+                darkModeBtnText.textContent = "Light Mode";
+                moonIcon.setAttribute("data-lucide", "sun");
+                cartWidget.classList.replace("text-gray-700", "text-gray-200");
+            } else {
+                darkModeBtnText.textContent = "Dark Mode";
+                moonIcon.setAttribute("data-lucide", "moon");
+                cartWidget.classList.replace("text-gray-200", "text-gray-700");
+            }
+            lucide.createIcons();
+        });
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+</html>

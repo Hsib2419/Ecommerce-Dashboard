@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - E-Shop Admin</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, main, aside, div, section, button, img, input, textarea, select { transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+        body.dark { background-color: #0f172a; }
+        body.dark main { background-color: #0f172a; color: #f1f5f9; }
+        body.dark aside { background-color: #020617; }
+        body.dark .top-nav { background-color: #1e293b; }
+        body.dark .settings-card { background-color: #1e293b; }
+        body.dark .settings-card h2 { color: #f1f5f9; }
+        body.dark .settings-card h3 { color: #f1f5f9; }
+        body.dark label { color: #94a3b8; }
+        body.dark input, body.dark textarea, body.dark select { background-color: #334155 !important; color: #f1f5f9 !important; border-color: #475569 !important; }
+        body.dark input::placeholder, body.dark textarea::placeholder { color: #64748b; }
+        body.dark .divider { border-color: #334155; }
+        body.dark #darkModeBtn { background-color: #334155; }
+        body.dark #darkModeBtn:hover { background-color: #475569; }
+        body.dark .toggle-label { color: #94a3b8; }
+        body.dark .section-desc { color: #64748b; }
+
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 10px; margin-bottom: 6px; font-size: 1.05rem; font-weight: 600; transition: background 0.2s, transform 0.15s; }
+        .nav-link:hover { background-color: rgba(255,255,255,0.18); transform: scale(1.04); }
+        .nav-link.active { background-color: rgba(255,255,255,0.25); }
+        .nav-link svg { flex-shrink: 0; width: 20px; height: 20px; }
+
+        /* Toggle Switch */
+        .toggle { position: relative; display: inline-block; width: 48px; height: 26px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background: #cbd5e1; border-radius: 999px; transition: 0.3s; }
+        .slider:before { content: ""; position: absolute; height: 18px; width: 18px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .slider { background: #0891b2; }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 6px; }
+        .field input, .field textarea, .field select { width: 100%; border: 2px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; font-size: 0.95rem; outline: none; background: white; color: #1e293b; }
+        .field input:focus, .field textarea:focus, .field select:focus { border-color: #0891b2; }
+
+        .settings-tab { padding: 8px 18px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; color: #64748b; }
+        .settings-tab.active { background: #0891b2; color: white; }
+        .settings-tab:hover:not(.active) { background: #f1f5f9; }
+        body.dark .settings-tab:hover:not(.active) { background: #334155; color: #f1f5f9; }
+        body.dark .settings-tab { color: #94a3b8; }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-200">
+
+    <!-- SIDEBAR -->
+    <aside class="bg-cyan-600 text-white w-64 p-6 flex flex-col min-h-screen">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white/20 p-2 rounded-xl"><i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i></div>
+            <h1 class="text-2xl font-bold leading-tight">E-Shop<br><span class="text-cyan-200 text-sm font-medium tracking-widest uppercase">Admin</span></h1>
+        </div>
+        <nav class="flex-1">
+            <a href="index.html"     class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="orders.html"    class="nav-link"><i data-lucide="shopping-cart"></i> Orders</a>
+            <a href="products.html"  class="nav-link"><i data-lucide="package"></i> Products</a>
+            <a href="customers.html" class="nav-link"><i data-lucide="users"></i> Customers</a>
+            <a href="settings.html"  class="nav-link active"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+        <div class="mt-6 pt-4 border-t border-white/20 flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s" alt="Profile" class="w-9 h-9 rounded-full border-2 border-white/40">
+            <div><p class="text-sm font-semibold leading-none">Admin User</p><p class="text-xs text-cyan-200 mt-0.5">admin@eshop.com</p></div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6 bg-white">
+        <nav class="top-nav flex justify-between items-center p-4 rounded-xl shadow-lg mb-6">
+            <div class="flex items-center gap-2 text-gray-500">
+                <i data-lucide="home" class="w-4 h-4"></i><span class="text-sm">Home</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span class="text-sm font-semibold text-cyan-600">Settings</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <button id="darkModeBtn" class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-3xl shadow-lg hover:bg-cyan-800 transition duration-300 hover:scale-105 text-sm font-medium">
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                    <span id="darkModeBtnText">Dark Mode</span>
+                </button>
+                <div class="relative text-gray-700">
+                    <i data-lucide="bell" class="w-7 h-7"></i>
+                    <span class="absolute -top-1 -right-1 bg-cyan-500 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+                </div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s" alt="Profile" class="w-10 h-10 rounded-full">
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold">Settings</h1>
+            
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-6 flex-wrap">
+            <button class="settings-tab active" data-tab="profile">👤 Profile</button>
+            <button class="settings-tab" data-tab="shop">🏪 Shop Info</button>
+            <button class="settings-tab" data-tab="notifications">🔔 Notifications</button>
+            <button class="settings-tab" data-tab="security">🔒 Security</button>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div id="tab-profile" class="tab-content">
+            <div class="settings-card bg-white rounded-xl shadow-lg p-6 mb-5">
+                <h2 class="text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="user" class="w-5 h-5 text-cyan-600"></i> Profile Info</h2>
+                
+
+                <!-- Avatar -->
+                <div class="flex items-center gap-4 mb-6">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s" class="w-20 h-20 rounded-full border-4 border-cyan-200">
+                    <div>
+                        <button class="bg-cyan-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-cyan-700 transition">Change Photo</button>
+                        <p class="text-xs text-gray-400 mt-1">JPG, PNG max 2MB</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="field"><label>First Name</label><input type="text"></div>
+                    <div class="field"><label>Last Name</label><input type="text" ></div>
+                    <div class="field"><label>Email</label><input type="email" ></div>
+                    <div class="field"><label>Phone</label><input type="text" ></div>
+                    <div class="field md:col-span-2"><label>Bio</label><textarea rows="3" placeholder="Write something about yourself..."></textarea></div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="flex items-center gap-2 bg-cyan-600 text-white px-6 py-2.5 rounded-xl hover:bg-cyan-700 transition font-medium">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHOP TAB -->
+        <div id="tab-shop" class="tab-content hidden">
+            <div class="settings-card bg-white rounded-xl shadow-lg p-6 mb-5">
+                <h2 class="text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="store" class="w-5 h-5 text-cyan-600"></i> Shop Information</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="field"><label>Shop Name</label><input type="text" value="E-Shop BD"></div>
+                    <div class="field"><label>Category</label>
+                        <select><option>Electronics</option><option>Fashion</option><option>Home & Living</option></select>
+                    </div>
+                    <div class="field"><label>Email</label><input type="email" value="support@eshop.com"></div>
+                    <div class="field"><label>Phone</label><input type="text" value="+880 1900-000000"></div>
+                    <div class="field"><label>Website</label><input type="text" value="https://eshop.com.bd"></div>
+                    <div class="field"><label>Currency</label>
+                        <select><option>USD ($)</option><option>BDT (৳)</option><option>EUR (€)</option></select>
+                    </div>
+                    <div class="field md:col-span-2"><label>Address</label><input type="text" value="123 Banani, Dhaka, Bangladesh"></div>
+                    <div class="field md:col-span-2"><label>Shop Description</label><textarea rows="3">Best electronics store in Bangladesh with premium products.</textarea></div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="flex items-center gap-2 bg-cyan-600 text-white px-6 py-2.5 rounded-xl hover:bg-cyan-700 transition font-medium">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS TAB -->
+        <div id="tab-notifications" class="tab-content hidden">
+            <div class="settings-card bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="bell" class="w-5 h-5 text-cyan-600"></i> Notification Settings</h2>
+                
+
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between py-3 border-b divider border-gray-100">
+                        <div><p class="toggle-label font-semibold text-gray-700">New Orders</p></div>
+                        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between py-3 border-b divider border-gray-100">
+                        <div><p class="toggle-label font-semibold text-gray-700">Low Stock Alert</p></div>
+                        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between py-3 border-b divider border-gray-100">
+                        <div><p class="toggle-label font-semibold text-gray-700">Customer Messages</p></div>
+                        <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between py-3 border-b divider border-gray-100">
+                        <div><p class="toggle-label font-semibold text-gray-700">Payment Received</p></div>
+                        <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                    <div class="flex items-center justify-between py-3">
+                        <div><p class="toggle-label font-semibold text-gray-700">Weekly Report</p></div>
+                        <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button class="flex items-center gap-2 bg-cyan-600 text-white px-6 py-2.5 rounded-xl hover:bg-cyan-700 transition font-medium">
+                        <i data-lucide="save" class="w-4 h-4"></i> Save Preferences
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECURITY TAB -->
+        <div id="tab-security" class="tab-content hidden">
+            <div class="settings-card bg-white rounded-xl shadow-lg p-6 mb-5">
+                <h2 class="text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-cyan-600"></i> Change Password</h2>
+                
+                <div class="max-w-md space-y-4">
+                    <div class="field"><label>Current Password</label><input type="password" placeholder="••••••••"></div>
+                    <div class="field"><label>New Password</label><input type="password" placeholder="••••••••"></div>
+                    <div class="field"><label>Confirm New Password</label><input type="password" placeholder="••••••••"></div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="flex items-center gap-2 bg-cyan-600 text-white px-6 py-2.5 rounded-xl hover:bg-cyan-700 transition font-medium">
+                        <i data-lucide="shield" class="w-4 h-4"></i> Update Password
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-card bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-lg font-bold mb-1 flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-cyan-600"></i> Two-Factor Authentication</h2>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="toggle-label font-semibold text-gray-700">Enable 2FA</p>
+                        
+                    </div>
+                    <label class="toggle"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Tabs
+        document.querySelectorAll(".settings-tab").forEach(tab => {
+            tab.addEventListener("click", function() {
+                document.querySelectorAll(".settings-tab").forEach(t => t.classList.remove("active"));
+                document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+                this.classList.add("active");
+                document.getElementById("tab-" + this.dataset.tab).classList.remove("hidden");
+            });
+        });
+
+        // Dark Mode
+        const darkModeBtn = document.getElementById("darkModeBtn");
+        const darkModeBtnText = document.getElementById("darkModeBtnText");
+        darkModeBtn.addEventListener("click", function () {
+            const isDark = document.body.classList.toggle("dark");
+            const icon = darkModeBtn.querySelector("i");
+            darkModeBtnText.textContent = isDark ? "Light Mode" : "Dark Mode";
+            icon.setAttribute("data-lucide", isDark ? "sun" : "moon");
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - E-Shop Admin</title>
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, main, aside, div, section, button, img {
+            transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+        body.dark { background-color: #0f172a; }
+        body.dark main { background-color: #0f172a; color: #f1f5f9; }
+        body.dark aside { background-color: #020617; }
+        body.dark .top-nav { background-color: #1e293b; }
+        body.dark .page-card { background-color: #1e293b; }
+        body.dark .page-card h2 { color: #f1f5f9; }
+        body.dark .stat-card { background-color: #1e293b; }
+        body.dark .stat-card h3 { color: #94a3b8; }
+        body.dark .stat-value { color: #f1f5f9; }
+        body.dark .product-row:hover { background-color: #273344; }
+        body.dark thead th { color: #94a3b8; background-color: #1e293b; }
+        body.dark tbody td { color: #e2e8f0; }
+        body.dark .prod-name { color: #f1f5f9; }
+        body.dark .search-box { background-color: #334155; color: #f1f5f9; border-color: #475569; }
+        body.dark .search-box::placeholder { color: #94a3b8; }
+        body.dark #darkModeBtn { background-color: #334155; }
+        body.dark #darkModeBtn:hover { background-color: #475569; }
+        body.dark .category-badge { background-color: #334155; color: #94a3b8; }
+
+        .nav-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 16px; border-radius: 10px; margin-bottom: 6px;
+            font-size: 1.05rem; font-weight: 600;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .nav-link:hover { background-color: rgba(255,255,255,0.18); transform: scale(1.04); }
+        .nav-link.active { background-color: rgba(255,255,255,0.25); }
+        .nav-link svg { flex-shrink: 0; width: 20px; height: 20px; }
+
+        .stock-high   { background: #dcfce7; color: #15803d; }
+        .stock-low    { background: #fef9c3; color: #a16207; }
+        .stock-out    { background: #fee2e2; color: #b91c1c; }
+        body.dark .stock-high { background: #14532d; color: #86efac; }
+        body.dark .stock-low  { background: #713f12; color: #fde68a; }
+        body.dark .stock-out  { background: #7f1d1d; color: #fca5a5; }
+
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+    </style>
+</head>
+<body class="flex min-h-screen bg-gray-200">
+
+    <!-- SIDEBAR -->
+    <aside class="bg-cyan-600 text-white w-64 p-6 flex flex-col min-h-screen">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="bg-white/20 p-2 rounded-xl">
+                <i data-lucide="shopping-bag" class="w-7 h-7 text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold leading-tight">E-Shop<br><span class="text-cyan-200 text-sm font-medium tracking-widest uppercase">Admin</span></h1>
+        </div>
+        <nav class="flex-1">
+            <a href="index.html" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="orders.html" class="nav-link"><i data-lucide="shopping-cart"></i> Orders</a>
+            <a href="products.html" class="nav-link active"><i data-lucide="package"></i> Products</a>
+            <a href="customers.html" class="nav-link"><i data-lucide="users"></i> Customers</a>
+            <a href="settings.html" class="nav-link"><i data-lucide="settings"></i> Settings</a>
+        </nav>
+        <div class="mt-6 pt-4 border-t border-white/20 flex items-center gap-3">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s" alt="Profile" class="w-9 h-9 rounded-full border-2 border-white/40">
+            <div>
+                <p class="text-sm font-semibold leading-none">Admin User</p>
+                <p class="text-xs text-cyan-200 mt-0.5">admin@eshop.com</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="flex-1 p-6 bg-white">
+
+        <!-- Top Nav -->
+        <nav class="top-nav flex justify-between items-center p-4 rounded-xl shadow-lg mb-6">
+            <div class="flex items-center gap-2 text-gray-500">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span class="text-sm">Home</span>
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span class="text-sm font-semibold text-cyan-600">Products</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <button id="darkModeBtn" class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-3xl shadow-lg hover:bg-cyan-800 transition duration-300 hover:scale-105 text-sm font-medium">
+                    <i data-lucide="moon" class="w-4 h-4"></i>
+                    <span id="darkModeBtnText">Dark Mode</span>
+                </button>
+                <div class="relative text-gray-700">
+                    <i data-lucide="bell" class="w-7 h-7"></i>
+                    <span class="absolute -top-1 -right-1 bg-cyan-500 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+                </div>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsZBVLzCNEWIPOv-p3sDy7G5QAnzHVoFlhwg&s" alt="Profile" class="w-10 h-10 rounded-full">
+            </div>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold">Products</h1>
+                
+            </div>
+            <button class="flex items-center gap-2 bg-cyan-600 text-white px-5 py-2.5 rounded-xl hover:bg-cyan-700 transition hover:scale-105 font-medium shadow">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Add Product
+            </button>
+        </div>
+
+        <!-- Stat Cards -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="stat-card bg-white p-5 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-cyan-100 p-3 rounded-xl"><i data-lucide="package" class="w-6 h-6 text-cyan-600"></i></div>
+                <div><h3 class="text-gray-500 text-sm">Total Products</h3><p class="stat-value font-bold text-2xl">248</p></div>
+            </div>
+            <div class="stat-card bg-white p-5 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-green-100 p-3 rounded-xl"><i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i></div>
+                <div><h3 class="text-gray-500 text-sm">In Stock</h3><p class="stat-value font-bold text-2xl">210</p></div>
+            </div>
+            <div class="stat-card bg-white p-5 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-yellow-100 p-3 rounded-xl"><i data-lucide="alert-triangle" class="w-6 h-6 text-yellow-500"></i></div>
+                <div><h3 class="text-gray-500 text-sm">Low Stock</h3><p class="stat-value font-bold text-2xl">28</p></div>
+            </div>
+            <div class="stat-card bg-white p-5 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-4">
+                <div class="bg-red-100 p-3 rounded-xl"><i data-lucide="x-circle" class="w-6 h-6 text-red-500"></i></div>
+                <div><h3 class="text-gray-500 text-sm">Out of Stock</h3><p class="stat-value font-bold text-2xl">10</p></div>
+            </div>
+        </section>
+
+        <!-- Products Table -->
+        <div class="page-card bg-white rounded-xl shadow-lg p-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+                <div class="flex items-center gap-2 border-2 border-gray-200 rounded-xl px-4 py-2 w-full md:w-72 focus-within:border-cyan-400 transition">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+                    <input type="text" id="productSearch" placeholder="Search products..." class="search-box outline-none bg-transparent text-sm w-full text-gray-700">
+                </div>
+                <select id="categoryFilter" class="search-box border-2 border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-cyan-400 bg-white text-gray-700">
+                    <option value="all">All Categories</option>
+                    <option value="audio">Audio</option>
+                    <option value="input">Input Devices</option>
+                    <option value="display">Display</option>
+                    <option value="camera">Camera</option>
+                    <option value="storage">Storage</option>
+                    <option value="accessories">Accessories</option>
+                </select>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b-2 border-gray-100">
+                            <th class="text-gray-500 font-medium px-3 py-3 text-sm">Product</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Category</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Price</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Stock</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Sold</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Status</th>
+                            <th class="text-gray-500 font-medium py-3 text-sm">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsBody"></tbody>
+                </table>
+            </div>
+            <div class="flex items-center justify-between mt-6">
+                <p class="text-sm text-gray-500" id="productInfo"></p>
+                <div class="flex gap-2" id="productPagination"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const products = [
+
+            { name: "Gaming Mouse",        img: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=60&h=60&fit=crop", category: "input",       price: "$49",  stock: 85,  sold: 320, status: "high" },
+            { name: "Mechanical Keyboard", img: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=60&h=60&fit=crop", category: "input",       price: "$89",  stock: 60,  sold: 280, status: "high" },
+            { name: "Monitor 24\"",        img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=60&h=60&fit=crop", category: "display",     price: "$199", stock: 32,  sold: 170, status: "high" },
+            { name: "Webcam HD",           img: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=60&h=60&fit=crop", category: "camera",      price: "$79",  stock: 5,   sold: 110, status: "low" },
+            { name: "Headphone Pro",       img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=60&h=60&fit=crop", category: "audio",       price: "$120", stock: 45,  sold: 200, status: "high" },
+            { name: "USB Hub 7-Port",      img: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=60&h=60&fit=crop",    category: "accessories", price: "$35",  stock: 0,   sold: 95,  status: "out" },
+            { name: "Laptop Stand",        img: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=60&h=60&fit=crop", category: "accessories", price: "$65",  stock: 20,  sold: 88,  status: "high" },
+            { name: "Portable SSD 1TB",    img: "https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=60&h=60&fit=crop", category: "storage",     price: "$145", stock: 8,   sold: 75,  status: "low" },
+            { name: "Noise Cancel Headset",img: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=60&h=60&fit=crop",    category: "audio",       price: "$220", stock: 15,  sold: 60,  status: "high" },
+            { name: "RGB Mousepad XL",     img: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=60&h=60&fit=crop", category: "accessories", price: "$25",  stock: 0,   sold: 150, status: "out" },
+            { name: "4K Webcam",           img: "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=60&h=60&fit=crop", category: "camera",      price: "$99",  stock: 22,  sold: 55,  status: "high" },
+            { name: "Desk Lamp LED",       img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=60&h=60&fit=crop", category: "accessories", price: "$40",  stock: 3,   sold: 120, status: "low" },
+
+        ];
+
+        const ROWS = 8;
+        let page = 1, search = "", category = "all";
+
+        const stockLabel = { high: "In Stock", low: "Low Stock", out: "Out of Stock" };
+        const stockClass = { high: "stock-high", low: "stock-low", out: "stock-out" };
+
+        function filtered() {
+            return products.filter(p => {
+                const q = search.toLowerCase();
+                return (category === "all" || p.category === category) &&
+                       p.name.toLowerCase().includes(q);
+            });
+        }
+
+        function render() {
+            const data  = filtered();
+            const start = (page - 1) * ROWS;
+            const slice = data.slice(start, start + ROWS);
+            document.getElementById("productsBody").innerHTML = slice.map(p => `
+                <tr class="product-row border-b border-gray-100 hover:bg-gray-50 transition">
+                    <td class="px-3 py-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${p.img}" class="w-10 h-10 rounded-lg object-cover">
+                            <span class="prod-name font-semibold text-gray-800">${p.name}</span>
+                        </div>
+                    </td>
+                    <td class="py-3"><span class="category-badge bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium capitalize">${p.category}</span></td>
+                    <td class="py-3 font-bold text-green-600">${p.price}</td>
+                    <td class="py-3">${p.stock}</td>
+                    <td class="py-3 text-gray-500">${p.sold}</td>
+                    <td class="py-3"><span class="badge ${stockClass[p.status]}">${stockLabel[p.status]}</span></td>
+                    <td class="py-3">
+                        <div class="flex gap-2">
+                            <button class="text-cyan-600 hover:text-cyan-800"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+                            <button class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
+
+            const total = data.length;
+            const end   = Math.min(start + ROWS, total);
+            document.getElementById("productInfo").textContent = total === 0 ? "No products found" : `Showing ${start+1}–${end} of ${total}`;
+
+            const pages = Math.ceil(total / ROWS);
+            const pg    = document.getElementById("productPagination");
+            pg.innerHTML = "";
+            for (let i = 1; i <= pages; i++) {
+                const b = document.createElement("button");
+                b.textContent = i;
+                b.className = `px-3 py-1.5 rounded-lg border text-sm transition ${i === page ? "bg-cyan-600 text-white border-cyan-600" : "border-gray-200 hover:bg-cyan-600 hover:text-white"}`;
+                b.onclick = () => { page = i; render(); };
+                pg.appendChild(b);
+            }
+            lucide.createIcons();
+        }
+
+        document.getElementById("productSearch").addEventListener("input", function() { search = this.value; page = 1; render(); });
+        document.getElementById("categoryFilter").addEventListener("change", function() { category = this.value; page = 1; render(); });
+
+        // Dark Mode
+        const darkModeBtn = document.getElementById("darkModeBtn");
+        const darkModeBtnText = document.getElementById("darkModeBtnText");
+        darkModeBtn.addEventListener("click", function () {
+            const isDark = document.body.classList.toggle("dark");
+            const icon = darkModeBtn.querySelector("i");
+            darkModeBtnText.textContent = isDark ? "Light Mode" : "Dark Mode";
+            icon.setAttribute("data-lucide", isDark ? "sun" : "moon");
+
+            lucide.createIcons();
+        });
+
+        render();
+    </script>
+</body>
+</html>
